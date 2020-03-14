@@ -18,6 +18,7 @@
     <ul id="messages"></ul>
     WebSocketをつかったチャットアプリケーション
     <form id="chatbox">
+        {{.UserData.nickname}}:<br />
         <textarea></textarea>
         <input type="submit" value="送信" />
     </form>
@@ -33,7 +34,7 @@
                     alert("error!")
                     return false
                 }
-                socket.send(msgBox.val())
+                socket.send(JSON.stringify({ Message: msgBox.val() }))
                 msgBox.val("")
                 return false
             })
@@ -46,7 +47,12 @@
                     alert("closed connection")
                 }
                 socket.onmessage = function (e) {
-                    messages.append($("<li>").text(e.data))
+                    console.log("socket.onmessage")
+                    var msg = JSON.parse(e.data)
+                    messages.append($("<li>").append(
+                        $("<strong>").text(msg.Name + " : "),
+                        $("<span>").text(msg.Message),
+                    ))
                 }
             }
         })
