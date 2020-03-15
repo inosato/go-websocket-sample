@@ -44,7 +44,7 @@ func main() {
 		github.New(os.Getenv("GITHUB_ID"), os.Getenv("GITHUB_SECRET"), os.Getenv("GITHUB_REDIRECT")),
 	)
 
-	r := newRoom()
+	r := newRoom(UseAuthAvatar)
 	r.tracer = trace.New(os.Stdout)
 	http.Handle("/chat", MustAuth(&templateHandler{filename: "chat.html"}))
 	http.Handle("/login", &templateHandler{filename: "login.html"})

@@ -25,9 +25,8 @@ func (c *client) read() {
 				msg.Name = nickname
 			}
 
-			if avatarURL, ok := c.userData["avatar_url"].(string); ok {
-				msg.AvatarURL = avatarURL
-			}
+			msg.AvatarURL, _ = c.room.avatar.GetAvatarURL(c)
+
 			c.room.forward <- msg
 		} else {
 			log.Fatal("cannot read json ", err)
