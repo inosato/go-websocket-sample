@@ -19,7 +19,15 @@ func (c *client) read() {
 		var msg *message
 		if err := c.socket.ReadJSON(&msg); err == nil {
 			msg.When = time.Now()
-			msg.Name = c.userData["nickname"].(string)
+
+			msg.Name = "anonymous"
+			if nickname, ok := c.userData["nickname"].(string); ok {
+				msg.Name = nickname
+			}
+
+			if avatarURL, ok := c.userData["avatar_url"].(string); ok {
+				msg.AvatarURL = avatarURL
+			}
 			c.room.forward <- msg
 		} else {
 			log.Fatal("cannot read json ", err)
