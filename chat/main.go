@@ -44,12 +44,14 @@ func main() {
 		github.New(os.Getenv("GITHUB_ID"), os.Getenv("GITHUB_SECRET"), os.Getenv("GITHUB_REDIRECT")),
 	)
 
-	r := newRoom(UseAuthAvatar)
+	// r := newRoom(UseAuthAvatar)
+	r := newRoom(UseGravatarAvatar)
 	r.tracer = trace.New(os.Stdout)
 	http.Handle("/chat", MustAuth(&templateHandler{filename: "chat.html"}))
 	http.Handle("/login", &templateHandler{filename: "login.html"})
-	http.HandleFunc("/auth/", loginHandler)
+	http.Handle("/upload", &templateHandler{filename: "upload.html"})
 	http.Handle("/room", r)
+	http.HandleFunc("/auth/", loginHandler)
 	http.HandleFunc("/logout", func(w http.ResponseWriter, r *http.Request) {
 		http.SetCookie(w, &http.Cookie{
 			Name:   "auth",
@@ -60,6 +62,8 @@ func main() {
 		w.Header()["Location"] = []string{"/chat"}
 		w.WriteHeader(http.StatusTemporaryRedirect)
 	})
+	http.HandleFunc("/uploader", UploaderHandler)
+	http.Handle("/avatars/", http.StripPrefix("/avatars/", http.FileServer(http.Dir("./avatars"))))
 	log.Println("Start WebSocket")
 	go r.run()
 	log.Println("Start WebServer Port:", *addr)

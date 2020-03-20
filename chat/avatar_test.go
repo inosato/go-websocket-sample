@@ -22,3 +22,16 @@ func TestAuthAvatar(t *testing.T) {
 	assert.Equal(t, testURL, url)
 
 }
+
+func TestGravatarAvatar(t *testing.T) {
+	var gravatarAvatar GravatarAvatar
+	client := new(client)
+	client.userData = map[string]interface{}{
+		"userid": "686f6765686f6765",
+	}
+
+	url, err := gravatarAvatar.GetAvatarURL(client)
+	assert.NoError(t, err)
+
+	assert.Equal(t, "//www.gravatar.com/avatar/686f6765686f6765", url)
+}

@@ -1,2 +1,4 @@
 # binary files
 /chat/chat
+/chat/avatars/*
+!/chat/avatars/.keepme
