@@ -34,3 +34,16 @@ func (_ GravatarAvatar) GetAvatarURL(c *client) (string, error) {
 	}
 	return "", ErrNoAvatar
 }
+
+type FileSystemAvatar struct{}
+
+var UserFileSystemAvatar FileSystemAvatar
+
+func (_ FileSystemAvatar) GetAvatarURL(c *client) (string, error) {
+	if userID, ok := c.userData["userid"]; ok {
+		if userIDStr, ok := userID.(string); ok {
+			return fmt.Sprintf("/avatars/%s.png", userIDStr), nil
+		}
+	}
+	return "", ErrNoAvatar
+}

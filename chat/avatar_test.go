@@ -1,6 +1,9 @@
 package main
 
 import (
+	"io/ioutil"
+	"os"
+	"path/filepath"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -34,4 +37,19 @@ func TestGravatarAvatar(t *testing.T) {
 	assert.NoError(t, err)
 
 	assert.Equal(t, "//www.gravatar.com/avatar/686f6765686f6765", url)
+}
+
+func TestFileSystemAvatar(t *testing.T) {
+	filename := filepath.Join("avatars", "abc.png")
+	ioutil.WriteFile(filename, []byte{}, 0777)
+	defer func() { os.Remove(filename) }()
+
+	var fileSystemAvatar FileSystemAvatar
+	client := new(client)
+	client.userData = map[string]interface{}{
+		"userid": "xyz",
+	}
+	url, err := fileSystemAvatar.GetAvatarURL(client)
+	assert.NoError(t, err)
+	assert.Equal(t, "/avatars/xyz.png", url)
 }
