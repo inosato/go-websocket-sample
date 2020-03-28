@@ -16,6 +16,8 @@ import (
 	"github.com/stretchr/signature"
 )
 
+var avatars Avatar = UserFileSystemAvatar
+
 type templateHandler struct {
 	once     sync.Once
 	filename string
