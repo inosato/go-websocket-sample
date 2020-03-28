@@ -9,6 +9,7 @@ import (
 )
 
 func UploaderHandler(w http.ResponseWriter, r *http.Request) {
+	log.Print("UploaderHandler start")
 	userID := r.FormValue("userid")
 
 	file, header, err := r.FormFile("avatarFile")
@@ -27,6 +28,7 @@ func UploaderHandler(w http.ResponseWriter, r *http.Request) {
 	filename := filepath.Join("avatars", userID+filepath.Ext(header.Filename))
 	log.Print(filename)
 	if err = ioutil.WriteFile(filename, data, 0777); err != nil {
+		log.Print(err)
 		io.WriteString(w, err.Error())
 		return
 	}

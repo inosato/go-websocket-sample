@@ -3,6 +3,8 @@ package main
 import (
 	"errors"
 	"fmt"
+	"io/ioutil"
+	"path/filepath"
 )
 
 var ErrNoAvatar = errors.New("chat: cannot get avatar")
@@ -42,7 +44,17 @@ var UserFileSystemAvatar FileSystemAvatar
 func (_ FileSystemAvatar) GetAvatarURL(c *client) (string, error) {
 	if userID, ok := c.userData["userid"]; ok {
 		if userIDStr, ok := userID.(string); ok {
-			return fmt.Sprintf("/avatars/%s.png", userIDStr), nil
+			if files, err := ioutil.ReadDir("avatars"); err == nil {
+				for _, file := range files {
+					if file.IsDir() {
+						continue
+					}
+					if match, _ := filepath.Match(userIDStr+"*", file.Name()); match {
+						return fmt.Sprintf("/avatars/%s", file.Name()), nil
+					}
+				}
+			}
+
 		}
 	}
 	return "", ErrNoAvatar
